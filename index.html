@@ -431,6 +431,44 @@ details.fold .fhint{font-size:12px;color:var(--dim);font-weight:600;margin-left:
 
 
 
+
+/* ===== 職業比較（雷達圖） ===== */
+.cmpbox{background:linear-gradient(180deg,#151d31,#141a26 55%);border:1.5px solid #3b4560;
+ border-radius:18px;padding:20px 20px;margin-bottom:16px}
+.cmpbox h3{font-size:19px;font-weight:900;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.cmpbox .h3sub{font-size:12.5px;color:var(--dim);margin-bottom:14px;margin-top:3px}
+.radarwrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.radarwrap svg{flex:0 1 480px;width:480px;max-width:100%;height:auto;display:block}
+.rlg{flex:1 1 240px;min-width:220px}
+.rlgi{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-radius:11px;
+ background:#0d1220;border:1px solid var(--line);border-left:4px solid var(--lc);margin-bottom:9px}
+.rlgi .dot{width:13px;height:13px;border-radius:4px;background:var(--lc);flex-shrink:0;margin-top:3px}
+.rlgi .nm3{font-size:14.5px;font-weight:900;line-height:1.35}
+.rlgi .gp{font-size:11.5px;color:var(--dim);margin-top:2px}
+.axnote{font-size:12.3px;color:#8b93ad;line-height:1.7;margin-top:12px;
+ background:#0d1220;border-radius:9px;padding:10px 13px}
+.ctab{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
+.ctab th,.ctab td{border:1px solid var(--line);padding:9px 10px;text-align:center;vertical-align:middle}
+.ctab th{background:#1c2436;color:#c7d0e2;font-weight:800;font-size:12.5px}
+.ctab .rh{background:#101627;font-weight:800;color:#98a2b8;font-size:12.3px;text-align:left;white-space:nowrap}
+.top3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}
+.t3{border:1px solid var(--line);border-left:5px solid var(--lc);border-radius:13px;
+ background:#111726;padding:14px 16px}
+.t3 .t3h{font-size:15.5px;font-weight:900;color:var(--lc);margin-bottom:11px}
+.t3 .row{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.t3 .rk2{width:22px;height:22px;flex-shrink:0;border-radius:7px;background:var(--lc);color:#08101f;
+ display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900}
+.t3 .sk{font-size:13.5px;font-weight:800;flex:1}
+.t3 .pc{font-size:13px;font-weight:900;color:var(--lc);font-variant-numeric:tabular-nums}
+.t3 .bar2{height:7px;border-radius:4px;background:#0a0e18;border:1px solid var(--line);
+ overflow:hidden;margin-bottom:10px}
+.t3 .bar2 i{display:block;height:100%;background:var(--lc)}
+.t3 .adv{font-size:12.4px;color:#a9b3c9;line-height:1.7;margin-top:8px;
+ border-top:1px dashed var(--line);padding-top:10px}
+@media(max-width:760px){.radarwrap svg{flex:1 1 100%;width:100%}.rlg{flex:1 1 100%}
+ .top3{grid-template-columns:1fr}.ctab{font-size:11.5px}.ctab th,.ctab td{padding:7px 5px}
+ .cmpbox{padding:16px 14px}}
+
 /* ===================== 手機版 ===================== */
 @media (max-width:640px){
  .wrap{padding:14px 12px 60px}
@@ -1431,6 +1469,102 @@ function saveBar(){
 
 /* ---------- 目標分析 ---------- */
 var SUBS=["國文","英語","數學","社會","自然"];
+
+/* ================= 職業比較雷達圖 ================= */
+var RVAL={"C":10,"B":26,"A":44,"S":63,"SR":81,"SSR":100};
+function rankNum(r){
+ if(Array.isArray(r)) return (RVAL[r[0]]+RVAL[r[1]])/2;
+ return RVAL[r]!=null?RVAL[r]:50}
+var TIER_N={must:100,mid:58,low:22};
+var LOCAL_N={strong:100,any:82,some:62,few:22};
+var RISK_N={"生命風險":100,"失敗風險":86,"生存風險":86,"健康風險":74,"職場暴力":70,
+            "職災風險":70,"停飛風險":58,"收入風險":58,"作息風險":54};
+var AXES=[
+ {k:"salary", n:"薪資水準",  ic:"💰", get:function(c){return rankNum(c.rank.salary)}},
+ {k:"diff",   n:"職業難度",  ic:"🎯", get:function(c){return rankNum(c.rank.difficulty)}},
+ {k:"inten",  n:"工作強度",  ic:"😤", get:function(c){return rankNum(c.rank.intensity)}},
+ {k:"school", n:"學校依賴",  ic:"🏫", get:function(c){var t=TIER[c.id];return t?TIER_N[t[0]]:50}},
+ {k:"local",  n:"嘉義機會",  ic:"🏠", get:function(c){var w=WORK[c.id];return w?LOCAL_N[w.local]:50}},
+ {k:"risk",   n:"特殊風險",  ic:"⚠️", get:function(c){var r=RISK[c.id];return r?(RISK_N[r.lv]||70):14}}
+];
+function radarSVG(cs){
+ var W=520,H=400,cx=245,cy=196,R=132,N=AXES.length;
+ function pt(i,v){var a=-Math.PI/2+i*2*Math.PI/N,r=R*v/100;
+   return [cx+Math.cos(a)*r, cy+Math.sin(a)*r]}
+ var g='';
+ [0.25,0.5,0.75,1].forEach(function(f){
+   var d=AXES.map(function(_,i){var p=pt(i,f*100);return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' ')+'Z';
+   g+='<path d="'+d+'" fill="none" stroke="#2b3348" stroke-width="1"'+(f===1?' stroke-width="1.6"':'')+'/>'});
+ AXES.forEach(function(_,i){var p=pt(i,100);
+   g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#2b3348" stroke-width="1"/>'});
+ cs.forEach(function(c){
+   var col=GC[c.group];
+   var d=AXES.map(function(a,i){var p=pt(i,a.get(c));return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' ')+'Z';
+   g+='<path d="'+d+'" fill="'+col+'" fill-opacity=".16" stroke="'+col+'" stroke-width="2.6" stroke-linejoin="round"/>';
+   AXES.forEach(function(a,i){var p=pt(i,a.get(c));
+     g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.6" fill="'+col+'"/>'})});
+ AXES.forEach(function(a,i){
+   var p=pt(i,100), dx=p[0]-cx, dy=p[1]-cy, m=Math.sqrt(dx*dx+dy*dy)||1;
+   var lx=cx+dx/m*(R+34), ly=cy+dy/m*(R+30);
+   var anc = Math.abs(dx)<6 ? "middle" : (dx>0?"start":"end");
+   if(anc==="start") lx-=8; if(anc==="end") lx+=8;
+   g+='<text x="'+lx.toFixed(1)+'" y="'+(ly-3).toFixed(1)+'" text-anchor="'+anc+
+      '" fill="#8b93ad" font-size="15">'+a.ic+'</text>'+
+      '<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anc+
+      '" fill="#c7d0e2" font-size="13" font-weight="800">'+a.n+'</text>'});
+ return '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" '+
+   'font-family="Microsoft JhengHei,Noto Sans CJK TC,sans-serif">'+g+'</svg>'}
+
+function rankLabel(r){return Array.isArray(r)? r[0]+"→"+r[1] : r}
+
+function cmpBlock(){
+ if(picked.length<2) return "";
+ var cs=picked.map(byId).filter(Boolean);
+ if(cs.length<2) return "";
+ var legend=cs.map(function(c){
+   return '<div class="rlgi" style="--lc:'+GC[c.group]+'"><div class="dot"></div>'+
+    '<div><div class="nm3">'+c.name+'</div><div class="gp">'+c.group+'　·　'+c.major+'</div></div></div>'}).join("");
+
+ var rows=[
+  ["類組",       function(c){return c.group}],
+  ["代表科系",   function(c){return c.major}],
+  ["💰 薪資待遇", function(c){return rankLabel(c.rank.salary)}],
+  ["🎯 職業難度", function(c){return rankLabel(c.rank.difficulty)}],
+  ["😤 工作強度", function(c){return rankLabel(c.rank.intensity)}],
+  ["🏫 學校層級", function(c){var t=TIER[c.id];
+      return t? (t[0]==="must"?"需 Lv1~Lv2":t[0]==="mid"?"Lv2~Lv3 可行":"影響小") : "—"}],
+  ["🏠 嘉義在地", function(c){var w=WORK[c.id];return w?LOCAL_LABEL[w.local][0]:"—"}],
+  ["⚠️ 特殊風險", function(c){var r=RISK[c.id];return r?r.lv:"無特別標註"}]
+ ];
+ var tbl='<div style="overflow-x:auto"><table class="ctab"><tr><th style="width:96px"></th>'+
+   cs.map(function(c){return '<th style="color:'+GC[c.group]+'">'+c.name+'</th>'}).join("")+'</tr>'+
+   rows.map(function(r){
+     return '<tr><td class="rh">'+r[0]+'</td>'+
+      cs.map(function(c){var v=r[1](c);
+        return '<td'+(r[0]==="代表科系"?' style="font-size:12px"':'')+'>'+v+'</td>'}).join("")+'</tr>'}).join("")+
+   '</table></div>';
+
+ var t3=cs.map(function(c){
+   var idx=c.skills.map(function(v,i){return [v,i]}).sort(function(a,b){return b[0]-a[0]}).slice(0,3);
+   var col=GC[c.group];
+   var rowsHtml=idx.map(function(x,i){
+     var nm=SKILL_KEYS[x[1]];
+     return '<div class="row"><div class="rk2">'+(i+1)+'</div><div class="sk">'+nm+
+      '</div><div class="pc">'+x[0]+'%</div></div>'+
+      '<div class="bar2"><i style="width:'+Math.round(x[0]/45*100)+'%"></i></div>'}).join("");
+   var top=SKILL_KEYS[idx[0][1]];
+   var ad=(SKILL_ADVICE.filter(function(a){return a[0]===top})[0]||["",""])[1];
+   return '<div class="t3" style="--lc:'+col+'"><div class="t3h">'+c.name+'</div>'+rowsHtml+
+     '<div class="adv">🎒 <b style="color:'+col+'">最該先練的是「'+top+'」</b>　'+ad+'</div></div>'}).join("");
+
+ return '<div class="cmpbox"><h3>📊 你選的 '+cs.length+' 個職業，長這樣</h3>'+
+  '<div class="h3sub">六個面向一次比較。<b>越往外圈＝那一項越高</b>——但「高」不一定是好事，工作強度和風險越外圈代表越辛苦。</div>'+
+  '<div class="radarwrap">'+radarSVG(cs)+'<div class="rlg">'+legend+
+  '<div class="axnote">💰薪資　🎯難度（多難進去）　😤強度（多累）<br>🏫學校依賴（多看學校）　🏠嘉義在地機會　⚠️特殊風險</div></div></div>'+
+  tbl+
+  '<div style="font-size:13px;font-weight:900;color:#98a2b8;margin:20px 0 0">▸ 每個職業最重要的三項能力</div>'+
+  '<div class="top3">'+t3+'</div></div>'}
+
 /* --- 各項積分計算 --- */
 function fMoral(){
  if(F.pun==="major") return 0;
@@ -1565,7 +1699,7 @@ function renderPlan(){
     '<div class="tact">👉 <b>現在該做的事</b>　'+t.act+'</div></div>'}).join("");
 
  v.innerHTML=
-  totbar+ saveBar()+
+  cmpBlock()+ totbar+ saveBar()+
   '<div class="box" style="--ac:#a78bfa"><h3>📝 第一步：會考成績</h3>'+
    '<div class="h3sub">嘉義區只採「精熟A／基礎B／待加強C」三等級，不細分 A++、A+</div>'+
    '<div class="sgrid">'+inputs+wsel+'</div>'+
