@@ -554,6 +554,14 @@ details.fold .fhint{font-size:12px;color:var(--dim);font-weight:600;margin-left:
 .rk{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:22px;
  padding:0 8px;border-radius:6px;font-size:12px;font-weight:900;border:1.5px solid;font-family:Arial,sans-serif}
 footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:#6b7488}
+/* 每頁結尾的版權／版本戳記 */
+.pgend{margin-top:28px;padding-top:13px;border-top:1px solid var(--line);
+ display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:#6b7488}
+.pgend .cw{font-weight:800;color:#8b93ad}
+.pgend .vv{font-weight:900;color:#c7d0e2;background:#1c2436;border:1px solid #2f3a52;
+ border-radius:999px;padding:2px 10px;font-family:Arial,sans-serif}
+.pgend .dt{margin-left:auto}
+@media(max-width:640px){.pgend{font-size:10.5px;gap:8px}.pgend .dt{margin-left:0;width:100%}}
 </style></head><body>
 <div class="wrap">
 <header>
@@ -577,7 +585,7 @@ footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-si
 <div class="view" id="v-subj"></div>
 
 <div class="tray" id="tray" style="display:none"></div>
-<footer>資料來源：教育部、勞動部職類別薪資調查、主計總處、115學年度嘉義區免試入學簡章、104人力銀行｜製作 2026/09</footer>
+<footer>資料來源：教育部、勞動部職類別薪資調查、主計總處、115學年度嘉義區免試入學簡章、104人力銀行<br><span id="gfoot"></span></footer>
 </div>
 <div id="lb" onclick="this.classList.remove('on')"><img id="lbimg" alt=""></div>
 <script>
@@ -807,6 +815,7 @@ var PIE=["#60a5fa","#a78bfa","#f472b6","#fbbf24","#34d399","#22d3ee"];
 var TABS=[["jobs","🃏 職業卡牌"],["tree","🌳 三路技能樹"],["exam","📋 會考制度"],
           ["普高","🎓 普高路徑"],["高工","🔧 高工路徑"],["高商","💼 高商路徑"],
           ["plan","🎯 目標分析"],["subj","📚 考科拆解"]];
+var COPY="© 2026 tako", VERSION="v1.0", BUILT="2026/09/04";
 var cur="jobs", sel=null, picked=[], scores={}, writing=4;
 var myWeap={en:false,social:false,money:false};
 var mastery={};
@@ -864,7 +873,19 @@ function go(k){cur=k;
  if(k==="plan") renderPlan();
  if(k==="subj") renderSubj();
  if(k==="tree") renderTree();
+ stamp(document.getElementById("v-"+k));
  window.scrollTo({top:0,behavior:"smooth"})}
+
+/* 每頁結尾：版權 + 版本 */
+function stamp(el){
+ if(!el) return;
+ var old=el.lastElementChild;
+ if(old && old.className==="pgend") el.removeChild(old);
+ var d=document.createElement("div"); d.className="pgend";
+ d.innerHTML='<span class="cw">'+COPY+'</span>'+
+  '<span class="vv">'+VERSION+'</span>'+
+  '<span class="dt">更新於 '+BUILT+'</span>';
+ el.appendChild(d)}
 
 /* ---------- 圖片頁 ---------- */
 function imgPage(el,img,title,desc,lead,ac,jobs){
@@ -1942,6 +1963,7 @@ function renderResult(){
 /* ---------- 啟動 ---------- */
 try{var _w=localStorage.getItem("cy_weap"); if(_w) myWeap=JSON.parse(_w);
     var _m=localStorage.getItem("cy_mastery"); if(_m) mastery=JSON.parse(_m);}catch(e){}
+document.getElementById("gfoot").innerHTML=COPY+"　·　"+VERSION+"　·　更新於 "+BUILT;
 renderGrid();renderWeapBar();go("jobs");
 </script>
 <style>@media(max-width:900px){.cols2{grid-template-columns:1fr !important}}</style>
