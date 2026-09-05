@@ -571,6 +571,57 @@ details.fold .fhint{font-size:12px;color:var(--dim);font-weight:600;margin-left:
 @media(max-width:640px){.cai{font-size:8.5px;padding:1px 5px;bottom:48px}
  .aitag{padding:7px 11px}.aitag .tv{font-size:13px}}
 
+
+/* ===== 精簡／完整 切換 ===== */
+header{position:relative}
+.modesw{display:flex;gap:0;border:1.5px solid var(--line);border-radius:11px;overflow:hidden;
+ background:#0d1220;flex-shrink:0}
+.modesw button{padding:8px 16px;border:none;background:none;font-family:inherit;font-size:13.5px;
+ font-weight:900;cursor:pointer;color:#7c8aa5;white-space:nowrap;transition:.15s}
+.modesw button:hover{color:#c7d0e2}
+.modesw button.on{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff}
+.hrow{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hrow .htxt{flex:1;min-width:200px}
+.modehint{font-size:11.5px;color:#6b7690;margin-top:5px;text-align:right}
+/* 精簡版隱藏規則 */
+body.lite .fullonly{display:none !important}
+body.lite .box .h3sub,body.lite .cmpbox .h3sub{display:none}
+body.lite #v-quiz .h3sub{display:block}
+body.lite .esrc,body.lite .aisrc,body.lite .abs,body.lite .cut .sr,
+body.lite .frow .fstd,body.lite .si .nt,body.lite .dq .dqn2{display:none}
+body.lite details.fold{display:none}
+body.lite .frow{grid-template-columns:1fr}
+body.lite .frow > .fr{border-left:none;border-top:1px solid var(--line)}
+/* 精簡版：能力配比長條 */
+.sk3{display:flex;flex-direction:column;gap:10px}
+.sk3 .r{display:flex;align-items:center;gap:10px}
+.sk3 .nm3{font-size:14px;font-weight:800;width:72px;flex-shrink:0;color:#c7d0e2}
+.sk3 .bar3{flex:1;height:14px;border-radius:7px;background:#0a0e18;border:1px solid var(--line);overflow:hidden}
+.sk3 .bar3 i{display:block;height:100%}
+.sk3 .pv3{font-size:14px;font-weight:900;width:42px;text-align:right;font-variant-numeric:tabular-nums}
+/* 精簡版：缺點只留標題 */
+.con3{display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.con3:first-child{border-top:none}
+.con3 .cn3{width:22px;height:22px;flex-shrink:0;border-radius:7px;background:#3b1218;color:#fca5a5;
+ display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.con3 .ct3{font-size:14.5px;font-weight:800;line-height:1.5}
+/* 精簡版：專武晶片 */
+.wq{display:flex;gap:9px;flex-wrap:wrap}
+.wq .wqi{display:flex;align-items:center;gap:8px;border:1.5px solid var(--wc);border-radius:11px;
+ background:#0d1220;padding:9px 14px;font-size:14.5px;font-weight:900}
+.wq .wqi .wi{width:30px;height:24px;border-radius:7px;background:var(--wc);color:#08101f;
+ display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900}
+.wpl{display:flex;gap:9px;flex-wrap:wrap}
+.wpl button{padding:11px 20px;border-radius:11px;border:1.5px solid var(--line);background:#0d1220;
+ font-family:inherit;font-size:15px;font-weight:900;cursor:pointer;color:#98a2b8;
+ display:flex;align-items:center;gap:9px}
+.wpl button .wi{width:30px;height:24px;border-radius:7px;display:inline-flex;align-items:center;
+ justify-content:center;font-size:11.5px;font-weight:900;color:#08101f;background:#2a3244}
+.wpl button.on{border-color:var(--wc);color:#fff;background:#101a2b}
+.wpl button.on .wi{background:var(--wc)}
+@media(max-width:640px){.modesw button{padding:7px 12px;font-size:12.5px}
+ .modehint{text-align:left}.sk3 .nm3{width:60px;font-size:13px}}
+
 /* ===================== 手機版 ===================== */
 @media (max-width:640px){
  .wrap{padding:14px 12px 60px}
@@ -637,7 +688,7 @@ details.fold .fhint{font-size:12px;color:var(--dim);font-weight:600;margin-left:
  details.fold>summary{padding:12px 14px;font-size:14.5px}
  details.fold .fbody{padding:13px 14px}
 }
-@media (max-width:400px){
+@media (max-width:340px){
  .grid{grid-template-columns:1fr}
  .sgrid{grid-template-columns:1fr}
  .kpi{grid-template-columns:1fr}
@@ -667,8 +718,16 @@ footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-si
 </style></head><body>
 <div class="wrap">
 <header>
-  <h1>🧭 升學職業導覽</h1>
-  <div class="sub">35 張職業卡牌 · 職業推薦 · 三條升學路徑 · 會考制度</div>
+  <div class="hrow">
+    <div class="htxt">
+      <h1>🧭 升學職業導覽</h1>
+      <div class="sub">35 張職業卡牌 · 職業推薦 · 三條升學路徑 · 會考制度</div>
+    </div>
+    <div>
+      <div class="modesw" id="modesw"></div>
+      <div class="modehint" id="modehint"></div>
+    </div>
+  </div>
 </header>
 <div class="nav" id="nav"></div>
 
@@ -734,7 +793,7 @@ const AUDIT_LEAD="這份資料在 2026 年 9 月逐條查核過。下面列出<b
 const AUDIT=[{"lv": "fixed", "t": "查核後已修正的錯誤", "items": ["<b>空軍基地名稱寫錯</b>：原本寫「志航基地在嘉義」是錯的。嘉義市的是<b>空軍嘉義基地</b>（第四戰術戰鬥機聯隊，F-CK-1 經國號）；<b>志航基地在台東</b>，兩者常被搞混，已更正。", "<b>台積電員工人數過時</b>：原本寫 7.7 萬人，實際 2024 年底已達 84,512 人、2025 年超越英特爾，現約 9 萬人，已更新。", "<b>嘉工 111 年的 17.8% 是拼湊出來的</b>：分子（台科32＋北科52＝84人）是 111 年，分母（畢業471人）卻是 113 年的數字，兩者不能相除。已改為只列人數，並改用 113 年有完整分母的 8.9%（台科大42人／畢業471人）。", "<b>醫學系「1,037 名」查不到出處</b>：已改為「約 1,000 名上下」，並附上可查證的組成（115學年度繁星197＋個人申請663＝860，另有考試分發）。", "<b>精算師「全台僅 46 人」講法不精確</b>：46 人是<b>勞動部薪資調查中該職類的受僱人數</b>，不等於持有精算師資格的總人數（各家媒體從 42 人到 200 人都有，口徑不同）。已改寫。", "<b>嘉義縣治重劃「200 億元」查無出處</b>：已改用查得到的「約 367 公頃、預計 2030 年完成開發」。"]}, {"lv": "solid", "t": "有官方或原始出處、可以放心引用", "items": ["嘉義區 82 分比序制度的<b>全部配分與計分細則</b>（112 學年度簡章、作業要點採計規範逐條核對無誤）。", "111 學年度前後的配分沿革：適性輔導 9→6 分、均衡學習 9→12 分且三領域改四領域（新增科技）——已找到新舊兩版原文比對。", "115 學年度嘉義區報名 3,687 人、錄取 3,658 人、錄取率 99.2%（<b>嘉義市政府官方新聞稿</b>）。", "嘉義高中 114 學年度最低錄取 5B、5A者115人、3A以上272人、錄取15位女學生（<b>嘉中官網</b>）。", "嘉中 114 年頂大 102 人／畢業 646 人＝15.79%；115 年醫牙 52 人、半導體相關 101 人（嘉中官網＋ETtoday）。", "協同 113 年頂大 48／298＝16.11%；嘉商 113 年四大科大 104／332＝31.3%；華南 24／307＝7.8%、台科北科掛零。", "116 年會考日期 5/15~5/16；116 學年度就學區劃定已於 2026 年 6 月公布；114 學年度作業要點於 113/10/7 函頒。", "台積電：2026 年徵才 8,000 人、碩士新進工程師平均年薪 220 萬（中央社）；嘉義先進封裝廠一期 2026/6 量產、二期 90 公頃 2026/7 動工、逾 3,000 億年產值與 9,000 個就業機會（中央社、聯合報）。", "警察在職平均死亡年齡 49.06 歲 vs 全國 75.41 歲（警政署官方統計表）。", "創業 4~5 年存活率 77.4%（2025 中小企業白皮書）。", "醫療暴力 2024 年 444 件（衛福部，經聯合報）；護理師離職率 10.7%（公會調查）。", "國軍 110~114 年 6,315 人申請提前退伍、4,267 人須賠償 9.29 億元（國防部，經遠見）。"]}, {"lv": "soft", "t": "只能當參考——出處較弱或已過時，引用時請留意", "items": ["<b>各校 115 學年度招生名額</b>（嘉中男516/女15、協同104、輔仁121、嘉工各科名額…）：只有<b>嘉義高商</b>那組在官網查得到，其餘來自簡章附表，本次查核<b>無法在公開網頁上覆核</b>。報名前請以當年簡章原文為準。", "<b>嘉工、嘉商熱門科的門檻推估</b>（4B~5B、5B~4B1C）：這是拿基北區同級學校推算的，建立在「不同就學區相對位置會類似」這個<b>未經驗證的假設</b>上。嘉義區官方從未公布，請務必當推估看。", "<b>110 學年度嘉中「72.5 分（1A4B，2個+）」</b>：來自嘉新國中 2021 年轉知的指標學校最低錄取標準，非嘉義區官方公布。", "<b>餐飲業職災千人率 3.864‰</b>：民間團體整理自職安署資料，本次未能在職安署網站找到原始統計表，且是 2017 年舊資料。", "<b>YouTuber 的 42% 退出、9 個月中位數</b>：104 人力銀行 <b>2018 年</b>調查，樣本僅 315 人，已是 8 年前的資料。台灣政府對這個職業<b>完全沒有統計</b>。", "<b>國軍自殺通報 158 人、零自傷政策累積 134 人死亡</b>：媒體（報導者）轉述監察院調查與國防部資料，本次未能取得原始報告核對。", "<b>台清交成電機約 600 名</b>：逐校名額彙整估算，非官方單一總表。", "<b>牙醫師、會計師、廚師、美髮師、音樂家、設計師的薪資</b>：勞動部沒有單獨列這些細職類，頁面上用的是人力銀行推估或業界行情，卡片上都已標「民間調查」或「業界估計」。"]}, {"lv": "none", "t": "刻意不給數字的部分", "items": ["<b>創業老闆的收入</b>：創業所得不在受僱薪資調查範圍內，官方沒有任何可引用的數字。而且分布極度偏斜，平均數毫無意義——給了反而誤導。", "<b>YouTuber 的收入</b>：坊間「幾萬訂閱月入幾萬」是行銷業者估算，不是調查數據。", "<b>機師的體檢失格率、美髮師的職業病發生率、房仲的流動率</b>：查遍民航局、勞研所、內政部都沒有量化統計，所以只描述風險機制，不編數字。", "<b>開業醫師、合夥會計師的收入</b>：屬執行業務所得，沒有官方統計。"]}];
 const AUDIT_STAT={"fixed": ["已修正", "#f87171", "🔧"], "solid": ["可放心引用", "#22c55e", "✅"], "soft": ["僅供參考", "#f59e0b", "⚠️"], "none": ["刻意留白", "#94a3b8", "⬜"]};
 const AUDIT_TAIL="原則很簡單：<b>寧可寫「查無」，也不編一個看起來很專業的數字。</b>看到不一樣的數字，先問「出處是誰、哪一年」——加工過的數字通常都比真實的好聽。";
-const WEAPONS=[{"k": "en", "n": "英文力", "icon": "ABC", "color": "#38bdf8", "d": "不是會考英文拿A，是<b>能直接用英文工作</b>——讀原文文件、開英文會議、和外國同事往來。"}, {"k": "social", "n": "人際力", "icon": "<svg viewBox=\"0 0 26 16\" width=\"19\" height=\"12\" style=\"display:block\" aria-label=\"嘴\"><path d=\"M2 7.5 C5.5 1.5 10 1.5 13 4.6 C16 1.5 20.5 1.5 24 7.5 C20 6.2 16 6.4 13 7.2 C10 6.4 6 6.2 2 7.5 Z\" fill=\"currentColor\"/><path d=\"M2 7.5 C6 6.2 10 6.4 13 7.2 C16 6.4 20 6.2 24 7.5 C21 13.6 16.5 15.4 13 15.4 C9.5 15.4 5 13.6 2 7.5 Z\" fill=\"currentColor\" opacity=\".82\"/><path d=\"M2.6 7.5 H23.4\" stroke=\"#fff\" stroke-width=\"1.1\" stroke-linecap=\"round\" opacity=\".45\"/></svg>", "color": "#f59e0b", "d": "讓人願意信任你、找你合作。包含<b>談判、簡報、帶團隊、建立人脈</b>——這是課本完全不教的東西。"}, {"k": "money", "n": "家庭後盾", "icon": "$$", "color": "#a78bfa", "d": "家裡能不能<b>支持長期投入而暫時沒收入</b>——重考、出國、念到博士、創業賠錢、無薪實習。誠實面對這件事很重要。"}];
+const WEAPONS=[{"k": "en", "n": "英文力", "n2": "ABC", "icon": "ABC", "color": "#38bdf8", "d": "不是會考英文拿A，是<b>能直接用英文工作</b>——讀原文文件、開英文會議、和外國同事往來。"}, {"k": "social", "n": "人際力", "n2": "嘴砲", "icon": "<svg viewBox=\"0 0 26 16\" width=\"19\" height=\"12\" style=\"display:block\" aria-label=\"嘴\"><path d=\"M2 7.5 C5.5 1.5 10 1.5 13 4.6 C16 1.5 20.5 1.5 24 7.5 C20 6.2 16 6.4 13 7.2 C10 6.4 6 6.2 2 7.5 Z\" fill=\"currentColor\"/><path d=\"M2 7.5 C6 6.2 10 6.4 13 7.2 C16 6.4 20 6.2 24 7.5 C21 13.6 16.5 15.4 13 15.4 C9.5 15.4 5 13.6 2 7.5 Z\" fill=\"currentColor\" opacity=\".82\"/><path d=\"M2.6 7.5 H23.4\" stroke=\"#fff\" stroke-width=\"1.1\" stroke-linecap=\"round\" opacity=\".45\"/></svg>", "color": "#f59e0b", "d": "讓人願意信任你、找你合作。包含<b>談判、簡報、帶團隊、建立人脈</b>——這是課本完全不教的東西。"}, {"k": "money", "n": "家庭後盾", "n2": "金錢攻擊", "icon": "$$", "color": "#a78bfa", "d": "家裡能不能<b>支持長期投入而暫時沒收入</b>——重考、出國、念到博士、創業賠錢、無薪實習。誠實面對這件事很重要。"}];
 const WLV={"3": ["超有用", "#4ade80", "★★★"], "2": ["普通加分", "#fbbf24", "★★☆"], "1": ["無感", "#64748b", "★☆☆"]};
 const WEAP={"safety": {"en": [2, "外商與跨國廠的安全規範文件是英文，本土中小企業則幾乎不用。"], "social": [3, "<b>這一行就是溝通。</b>你要叫老師傅停工、叫主管多花錢買設備。講不動人，規則寫得再好都沒用。"], "money": [1, "大學畢業考張證照就能入行，不需要長期投資期。"]}, "ot": {"en": [2, "讀原文教材與評估工具，但臨床溝通全中文。"], "social": [3, "每天面對的是失去能力的人和著急的家屬。能不能讓對方願意配合練習，直接決定治療效果。"], "money": [1, "大學畢業考國考即可執業，不需要長期無收入期。"]}, "psy": {"en": [2, "讀原文文獻與心理測驗工具，但實務工作全中文。"], "social": [3, "<b>這份工作的工具就是關係本身。</b>建立信任、承接情緒、拿捏界線，全都是人際能力。"], "money": [3, "碩士2~3年＋<b>全職實習一年幾乎沒收入</b>，執業後又常是兼任按時計費。這一項是實質門檻。"]}, "fire": {"en": [1, "消防特考不考英文，救災現場也用不到。"], "social": [2, "團隊默契與現場溝通很重要，但不是考選標準。"], "money": [1, "警大消防系公費，特考考上就有薪水。<b>是最不需要家庭後盾的路之一。</b>"]}, "singer": {"en": [2, "唱中文歌不需要；想跨出台灣市場就完全是另一回事。"], "social": [3, "接演出、找製作人、經營粉絲、談合約——舞台之外全是人的事。沒有人脈就沒有舞台。"], "money": [3, "<b>最被低估的一項。</b>作品要錢、宣傳要錢，成名前可能好幾年沒有穩定收入。撐不撐得住，家裡的條件是決定性因素。"]}, "doctor": {"en": [3, "看的是原文教科書與最新期刊，國考與住院醫師訓練全程都要讀英文。"], "social": [2, "看診溝通與醫病關係很重要，但技術與判斷仍是核心。"], "money": [3, "醫學系六年＋PGY＋專科訓練，等於十年以上都在低收入或無收入狀態。家裡撐不撐得住是現實問題。"]}, "dentist": {"en": [2, "讀原文教材，但日常工作以中文為主。"], "social": [3, "多數牙醫最終自行開業，客源靠口碑與信任累積，溝通能力直接決定收入。"], "money": [3, "開業一間診所的設備與裝潢動輒數百萬到千萬，沒有後盾就只能長期受僱。"]}, "pharmacist": {"en": [2, "藥物仿單與文獻多為英文，但社區藥局日常用中文。"], "social": [2, "社區藥局要衛教與應對客人，但不是決定性因素。"], "money": [1, "藥學系六年較長，但畢業即可就業，不需要長期無收入期。"]}, "ic": {"en": [3, "EDA工具、規格書、IP文件全是英文，跨國團隊開會也用英文。英文差會直接卡住升遷。"], "social": [2, "專案協作需要溝通，但技術實力是主要門檻。"], "money": [2, "碩士兩年是常態，家裡能支持會輕鬆一些，但不是必要條件。"]}, "tsmc": {"en": [2, "文件與系統多為英文，但製造現場以中文溝通為主。海外派駐才會真正需要。"], "social": [2, "跨部門協調與輪班交接需要溝通，但不是選才重點。"], "money": [2, "碩士優先，兩年學費生活費是主要成本。學士也收，所以不是硬門檻。"]}, "swe": {"en": [3, "官方文件、Stack Overflow、AI工具的最佳資源全是英文。看不懂英文＝技術成長速度直接減半。"], "social": [2, "遠距與獨立作業比例高，但要往上帶團隊就需要。"], "money": [1, "入行門檻低，自學轉職可行，不需要長期投資期。"]}, "me": {"en": [2, "設備手冊與規格書常是英文，但本土製造業以中文為主。"], "social": [2, "要和現場、供應商協調，溝通不好會很辛苦。"], "money": [1, "大學畢業即可就業，投資期短。"]}, "lawyer": {"en": [2, "涉外與商務案件需要，但本土訴訟幾乎全中文。想進國際事務所則是必需。"], "social": [3, "開發案源、談判、法庭應對、和當事人建立信任——律師的收入落差極大，關鍵就在這裡。"], "money": [3, "律師高考通過率低，很多人考 2~5 年；考上後前幾年薪水也不高。沒有後盾很難撐。"]}, "cpa": {"en": [2, "本土客戶的帳務、報稅、審計幾乎全中文，會計師考試也不考英文。只有進四大接跨國客戶、做 IFRS 或海外查核時才用得上——那是少數人的路，不是這一行的門檻。"], "social": [2, "要往合夥人走一定需要，但前幾年主要看專業與耐力。"], "money": [2, "會計師考試分科目、多年累積，考照期間有工作可做，壓力小於律師。"]}, "finance": {"en": [3, "研究報告、國際財經新聞、CFA 考試全是英文。做外資或國際市場更是基本門檻。"], "social": [3, "理專與業務端幾乎完全靠人脈與信任，客戶名單就是收入。"], "money": [2, "起步期客戶少、收入不穩，有家裡撐著比較能熬過前兩年。"]}, "marketing": {"en": [2, "跨國品牌需要，本土品牌用中文即可。"], "social": [3, "提案、跨部門協調、和客戶與代理商往來，行銷幾乎所有工作都是人的工作。"], "money": [1, "入行門檻低，不需要長期投資期。"]}, "civil": {"en": [1, "高普考不考英文（少數類科除外），日常業務也幾乎用不到。"], "social": [2, "單位內協調與民眾服務需要，但不影響考試。"], "money": [2, "全職準備考試通常要 1~2 年，這段期間沒有收入。有家裡支持會輕鬆很多。"]}, "sales": {"en": [1, "房仲與汽車業務面對的是本地客戶，中文即可。"], "social": [3, "<b>這一行就是人際力本身。</b>沒有人脈與信任，再努力也沒有成交。"], "money": [2, "底薪低，前幾個月可能接近零收入，需要一段緩衝期。"]}, "teacher": {"en": [1, "除非教英文，否則教甄與日常教學都用中文。"], "social": [3, "班級經營、親師溝通、和同事協作——教書的難處大半在人不在課本。"], "money": [2, "教甄競爭激烈，很多人代課或考好幾年。這段期間收入不穩。"]}, "pilot": {"en": [3, "<b>航空英文是硬門檻。</b>無線電通話、手冊、訓練全英文，ICAO 英語能力測驗未達標準不能飛。"], "social": [2, "機組協作（CRM）是訓練重點，但選才主要看能力與體檢。"], "money": [3, "自訓機師若未錄取航空公司，自費飛行訓練動輒數百萬；培訓期間也幾乎沒有收入。"]}, "actuary": {"en": [3, "精算師考試（SOA／CAS）全部是英文，教材與題目都是。英文不好等於考不了。"], "social": [1, "高度技術性的工作，主要與數據和模型打交道。"], "money": [2, "考照期間長達 5~10 年，但通常邊工作邊考，經濟壓力可控。"]}, "police": {"en": [1, "警察特考不考英文（外事警察除外），勤務也以中文為主。"], "social": [2, "處理民眾糾紛與團隊協作需要，但不是選才標準。"], "money": [1, "警專／警大是公費，在學期間有津貼，是少數<b>不需要家庭後盾</b>的路。"]}, "soldier": {"en": [1, "一般部隊用不到，只有特定軍種與外派需要。"], "social": [2, "帶兵與團隊生活需要，但入伍門檻不看這個。"], "money": [1, "志願役入伍就有薪水，軍校公費。<b>是最不需要家庭後盾的路之一。</b>"]}, "boss": {"en": [2, "做內銷不需要，做外貿或電商跨境就變成關鍵。"], "social": [3, "找客戶、談供應商、留住員工、拉合夥人——創業的每一件事都是人的事。"], "money": [3, "<b>這一項是決定性的。</b>創業初期沒收入、要墊資金、失敗要承擔債務。有沒有後盾，直接決定你能撐幾次。"]}, "nurse": {"en": [2, "部分文獻與醫囑用英文，但臨床溝通以中文為主。"], "social": [3, "面對病人、家屬與醫師團隊，情緒勞動極重。醫療暴力通報年年增加，溝通能力是保護自己的工具。"], "money": [1, "護理系畢業即可就業，起薪 5.3 萬，不需要長期投資期。"]}, "chef": {"en": [1, "本土餐廳用不到；只有想去國外或做西餐高階才需要。"], "social": [2, "廚房是高壓團隊，要能被帶也要能帶人。自己開店則變成關鍵。"], "money": [2, "學徒期薪水低，自己開店則需要一筆不小的資金。"]}, "hair": {"en": [1, "完全用不到。"], "social": [3, "<b>設計師的收入＝客人數。</b>客人跟的是「你這個人」，聊得來才會回頭。技術好但不會聊天，很難養客。"], "money": [2, "助理期收入極低（常低於基本工資水準），要撐 2~4 年；自己開店另需資金。"]}, "designer": {"en": [2, "設計工具與國外案例參考需要，接國外案子則是必需。"], "social": [2, "接案要談需求、改稿要溝通，但作品集仍是主要門檻。"], "money": [2, "接案初期收入不穩，設備（電腦、軟體）也是一筆投資。"]}, "youtuber": {"en": [2, "做中文市場不需要；想跨出台灣就完全不同。"], "social": [3, "business端全靠人：談業配、找合作、經營社群。而且鏡頭前的親和力本身就是人際力。"], "money": [3, "<b>最被低估的一項。</b>前期幾乎沒有收入，可能做一兩年才起來——42% 的人在 9 個月內就退出了。沒有後盾很難撐過那段。"]}, "musician": {"en": [2, "國外進修與國際比賽需要，國內教學不需要。"], "social": [3, "演出機會、樂團人脈、招生口碑，全靠關係網。純技術好但沒人認識，很難有舞台。"], "money": [3, "樂器、學費、留學、比賽旅費，音樂是<b>從小到大都在花錢</b>的路。這一項幾乎是入場券。"]}, "athlete": {"en": [1, "在台灣打球用不到；旅外才需要，而那是極少數人的問題。"], "social": [2, "教練與學長的信任會影響上場機會，但實力還是主要的。"], "money": [3, "<b>非常關鍵。</b>裝備、個別課、比賽遠征、營養補給，是一筆持續十幾年的支出。"]}, "creator": {"en": [2, "接海外案子與看國外教學資源需要，只做國內市場影響不大。"], "social": [3, "<b>案子幾乎都來自介紹。</b>沒有人脈就沒有案源，作品再好也一樣。"], "money": [3, "<b>起步期的關鍵。</b>沒有底薪、勞保自付全額，前一兩年收入不穩，家裡撐不撐得住是決定性的。"]}, "fw": {"en": [3, "<b>晶片規格書（datasheet）幾乎都是英文，而且沒有中文版。</b>看不懂就沒辦法work。這一行的英文不是加分，是門票。"], "social": [2, "要跟硬體、PM、客戶對接，但技術實力還是主要的。"], "money": [1, "大學畢業就能就業，不需要長期無收入期。"]}, "fab": {"en": [1, "設備手冊有英文，但日常溝通與現場作業全中文。本土廠幾乎用不到。"], "social": [2, "要跟承攬商、機台廠商、其他部門協調，講不清楚會出事，但不是最核心的能力。"], "money": [1, "<b>這一行幾乎不看家庭條件。</b>高職畢業就能進，邊做邊考證照，不需要家裡先投資好幾年。"]}, "arch": {"en": [2, "看國外案例與作品集有幫助，但考照與執業全中文。"], "social": [3, "<b>要說服業主、跟營造廠吵、跟建管單位溝通。</b>圖畫得再好，講不動人就落不了地；而且案子很多來自介紹。"], "money": [3, "<b>要撐很久。</b>考照平均要好幾年，考上後還要累積2年工程經驗才能開業，事務所前幾年的薪水撐不撐得住，家裡的條件影響很大。"]}};
 const WEAP_INTRO="這三樣<b>不在成績單上，也不在課表裡</b>，但對某些職業影響很大。勾選你目前有哪幾樣，下面會顯示它對這份工作的幫助有多大。";
@@ -950,7 +1009,36 @@ var PIE=["#60a5fa","#a78bfa","#f472b6","#fbbf24","#34d399","#22d3ee"];
 var TABS=[["jobs","🃏 職業卡牌"],["tree","🌳 三路技能樹"],["quiz","🧭 職業推薦"],["exam","📋 會考制度"],
           ["普高","🎓 普高路徑"],["高工","🔧 高工路徑"],["高商","💼 高商路徑"],
           ["plan","🎯 目標分析"],["subj","📚 考科拆解"]];
-var COPY="© 2026 tako", VERSION="v1.2", BUILT="2026/09/05";
+var COPY="© 2026 tako", VERSION="v1.3", BUILT="2026/09/05";
+/* ===== 精簡版 / 完整版 ===== */
+var MODE="lite";
+try{var _m=localStorage.getItem("cy_mode"); if(_m==="full"||_m==="lite") MODE=_m}catch(e){}
+function lite(){return MODE==="lite"}
+function renderModeSw(){
+ var el=document.getElementById("modesw"); if(!el) return;
+ el.innerHTML=[["lite","🍃 精簡版"],["full","📚 完整版"]].map(function(m){
+  return '<button class="'+(MODE===m[0]?"on":"")+'" onclick="setMode(\''+m[0]+'\')">'+m[1]+'</button>'}).join("");
+ var h=document.getElementById("modehint");
+ if(h) h.innerHTML = lite()? "只留重點，看得快" : "完整資料與出處都在這裡";
+ document.body.className = MODE}
+function setMode(m){
+ MODE=m; try{localStorage.setItem("cy_mode",m)}catch(e){}
+ renderModeSw(); renderStatic(); renderGrid(); renderWeapBar();
+ if(sel) detail(byId(sel));
+ var k=cur; go(k)}
+
+/* 精簡版用的白話等級說明（≤10字） */
+var LTI={SSR:"比狗還累",SR:"很硬會爆肝",S:"不太輕鬆",A:"還可以",B:"算穩定",C:"很輕鬆"};
+var LDI={SSR:"超級窄門",SR:"很難擠進去",S:"要拚一下",A:"有點門檻",B:"門檻不高",C:"誰都能做"};
+var LSA={SSR:"非常好賺",SR:"賺很多",S:"不錯",A:"中上",B:"普通",C:"看運氣"};
+function liteSalary(c){
+ var sp=c.salary&&c.salary.points||[], u=c.salary&&c.salary.unit||"month";
+ var vs=sp.filter(function(x){return x.v!=null}).map(function(x){return toM(x.v,u)/10000});
+ if(!vs.length) return LSA[topRank(c.rank.salary)]||"看運氣";
+ function f(n){return n>=10? Math.round(n) : Math.round(n*10)/10}
+ var lo=f(Math.min.apply(null,vs)), hi=f(Math.max.apply(null,vs));
+ return "月薪約 "+(lo===hi? lo : lo+"~"+hi)+" 萬"}
+var _sw=["專業","數理","溝通","抗壓","應變","外語"];
 var cur="jobs", sel=null, picked=[], scores={}, writing=4;
 var myWeap={en:false,social:false,money:false};
 var mastery={};
@@ -1150,18 +1238,41 @@ function scoringBlocks(){
    '<div class="warn">⚠️ 網路上流傳的「30 點制」「幾點上嘉中」多半是別區（基北區）的算法或補習班自訂估分，'+
    '<b>和嘉義區 82 分制不相容</b>，請不要混用。想知道自己國中的實際落點，最準的來源是<b>學校輔導室的歷年分發紀錄</b>。</div></div>'}
 
-imgPage(document.getElementById("v-exam"),"1_國中會考介紹.png","國中教育會考",
- "考試時間、六科出題比例、嘉義區前六志願與北興國中三年實際榜單",
- "⚠️ <b>最重要的觀念：</b>嘉義區超額比序總分 82 分，但<b>會考成績只佔 27 分（約三分之一）</b>。其餘 55 分來自多元學習表現、均衡學習、志願序等在校表現——所以不是「分數高就上」。往下捲有完整的 82 分拆解、得分範例與三校門檻。",
- "#a78bfa",[]);
-document.getElementById("v-exam").innerHTML += y116Block() + scoringBlocks() + estBlocks() + auditBlock();
-["普高","高工","高商"].forEach(function(tk){
+function liteScoring(){
+ var COL={"志願序":"#22c55e","多元學習表現":"#f59e0b","國中教育會考":"#a78bfa",
+          "均衡學習":"#38bdf8","適性輔導":"#34d399","扶助弱勢":"#64748b"};
+ var weight='<div class="wt">'+SCORE_ITEMS.map(function(it){
+   return '<div style="flex:'+it.pts+';background:'+COL[it.name]+'">'+
+     (it.pts>=6?it.name+' '+it.pts:it.pts)+'</div>'}).join("")+'</div>';
+ var items=SCORE_ITEMS.map(function(it){
+   return '<div class="si"><div class="hd">'+
+    '<div class="pt" style="color:'+COL[it.name]+'">'+it.pts+'</div>'+
+    '<div class="nm2">'+it.name+'</div>'+
+    '<div class="hb" style="background:'+it.hardc+'22;color:'+it.hardc+
+      ';border:1px solid '+it.hardc+'55">'+it.hard+'</div></div></div>'}).join("");
+ return '<div class="box" style="--ac:#a78bfa"><h3>🧮 82 分是怎麼組成的</h3>'+
+   '<div class="info" style="margin-top:0">會考只佔 <b>27 分</b>，其他 <b>55 分</b>都是在校表現。</div>'+
+   weight+items+'</div>'}
+
+function renderStatic(){
+ imgPage(document.getElementById("v-exam"),"1_國中會考介紹.png","國中教育會考",
+  "考試時間、六科出題比例、嘉義區前六志願與北興國中三年實際榜單",
+  lite()? "⚠️ <b>最重要的一句：</b>嘉義區總分 82 分，<b>會考只佔 27 分</b>。另外 55 分是在校表現。"
+        : "⚠️ <b>最重要的觀念：</b>嘉義區超額比序總分 82 分，但<b>會考成績只佔 27 分（約三分之一）</b>。其餘 55 分來自多元學習表現、均衡學習、志願序等在校表現——所以不是「分數高就上」。往下捲有完整的 82 分拆解、得分範例與三校門檻。",
+  "#a78bfa",[]);
+ document.getElementById("v-exam").innerHTML +=
+   lite()? liteScoring() : (y116Block() + scoringBlocks() + estBlocks() + auditBlock());
+ ["普高","高工","高商"].forEach(function(tk){ drawPath(tk) });
+ stamp(document.getElementById("v-exam"))}
+function drawPath(tk){
  var info=TRACK_INFO[tk];
  var jobs=CAREERS.filter(function(c){return (c.tracks||[]).some(function(t){return t.track===tk})})
                  .map(function(c){return c.id});
  imgPage(document.getElementById("v-"+tk),info.page,tk+"路徑",info.desc,
-  "下方圖片是完整的升學路徑說明，最底下列出這條路能通往的職業——點下去就能看到那份工作的真實樣貌。",
-  info.color,jobs)});
+  lite()? "看圖就好。最下面是這條路能走到的職業，點下去看。"
+        : "下方圖片是完整的升學路徑說明，最底下列出這條路能通往的職業——點下去就能看到那份工作的真實樣貌。",
+  info.color,jobs);
+ stamp(document.getElementById("v-"+tk))}
 
 /* ---------- 職業卡牌 ---------- */
 function renderGrid(){
@@ -1202,6 +1313,13 @@ function renderTray(){
     return '<span class="chip">'+c.name+'<b onclick="togglePick(\''+id+'\')">×</b></span>'}).join("")+
   '<button class="gobtn" onclick="go(\'plan\')">🎯 目標分析 →</button>'}
 
+function skill3(sk){
+ var idx=sk.map(function(v,i){return [i,v]}).sort(function(a,b){return b[1]-a[1]}).slice(0,3);
+ return '<div class="sk3">'+idx.map(function(x){
+  return '<div class="r"><span class="nm3">'+_sw[x[0]]+'</span>'+
+   '<span class="bar3"><i style="width:'+Math.min(100,x[1]*2.2)+'%;background:'+PIE[x[0]]+'"></i></span>'+
+   '<span class="pv3" style="color:'+PIE[x[0]]+'">'+x[1]+'%</span></div>'}).join("")+'</div>'}
+
 function pieChart(sk){
  var R=78,C=2*Math.PI*R,off=0,seg="";
  sk.forEach(function(v,i){var len=C*v/100;
@@ -1218,7 +1336,7 @@ function pieChart(sk){
    '<span style="flex:1;color:#c7d0e2">'+SKILL_KEYS[i]+'</span>'+
    '<b style="color:'+PIE[i]+'">'+v+'%</b></div>'}).join("")+'</div></div>'}
 
-function salaryBlock(c){
+function salaryBlock(c,onlyChart){
  var s=c.salary,u=s.unit||"month",
   bm={official:["#052e1a","#6ee7b7","官方統計"],survey:["#0a2540","#93c5fd","業界調查"],
       estimate:["#2e1f05","#fcd34d","推估／個案"]},b=bm[s.verified]||bm.estimate;
@@ -1246,6 +1364,12 @@ function salaryBlock(c){
   h+='</div></div>';
   if(pts.some(function(p){return p.e}))
    h+='<div style="font-size:11.5px;color:#f59e0b;text-align:right">* 標星號者為推估，非官方統計</div>'}
+ if(onlyChart){
+  if(s.headcount!=null) h+='<div class="kpi"><div class="k"><div class="big" style="--ac:'+GC[c.group]+
+    ';font-size:20px">'+nf(s.headcount)+' 人</div><div class="l">'+
+    (c.id==="tsmc"?"台積電員工數":"全台從業人數")+'</div></div></div>';
+  if(!pts.length) h+='<div class="info" style="margin-top:0">這一行<b>查不到官方薪資統計</b>。完整版有說明為什麼。</div>';
+  return h}
  var cells=pts.map(function(p){return '<div class="k"><div class="big" style="--ac:'+GC[c.group]+';font-size:20px">'+
    money(p.v,u)+'</div><div class="l">'+p.lb+(p.e?' *':'')+'</div></div>'});
  if(s.year)cells.push('<div class="k"><div class="big" style="--ac:'+GC[c.group]+';font-size:20px">'+
@@ -1298,7 +1422,49 @@ function extBlock(c){
   '<div class="lead" style="--ac:#a78bfa;margin:0 0 14px">🎲 <b>吃什麼天賦</b>　'+e.gate+'</div>'+
   list+'</div>'}
 
+function liteDetail(c){
+ var ac=GC[c.group],p=document.getElementById("panel");
+ var rk=[["工作強度","😤",c.rank.intensity,LTI[topRank(c.rank.intensity)]],
+         ["職業難度","🎯",c.rank.difficulty,LDI[topRank(c.rank.difficulty)]],
+         ["薪資待遇","💰",c.rank.salary,liteSalary(c)]];
+ var tr=(c.tracks||[]).map(function(t){
+   var sc=t.schools.map(function(k){return SCHOOLS[k]?SCHOOLS[k].name:k}).join("、");
+   return '<div class="tip"><div class="n" style="background:'+TRACK_INFO[t.track].color+'33;color:'+
+    TRACK_INFO[t.track].color+'">'+t.track.charAt(0)+'</div><div><div class="tt">走 '+t.track+
+    ' <span style="font-size:12px;font-weight:500;color:#98a2b8">→ '+sc+'</span></div></div></div>'}).join("");
+ var W=WEAP[c.id]||{}, strong=WEAPONS.filter(function(w){return W[w.k]&&W[w.k][0]===3});
+ var wq = strong.length
+   ? '<div class="wq">'+strong.map(function(w){
+      return '<div class="wqi" style="--wc:'+w.color+'"><span class="wi">'+w.icon+'</span>'+w.n2+
+       '<span style="font-size:12px;color:#4ade80">超有用</span></div>'}).join("")+'</div>'
+   : '<div style="font-size:14px;color:#98a2b8">這行沒有特別吃哪一項</div>';
+ var rkk=RISK[c.id];
+ var riskLite = rkk? '<div class="riskbox" style="padding:15px 18px"><h3><span class="tagd">⚠ DANGER</span>'+rkk.lv+'</h3>'+
+   '<div class="hl" style="margin:8px 0 0">'+rkk.head+'</div>'+
+   '<div class="numbig" style="font-size:19px;margin:5px 0 0">'+rkk.num+'</div></div>' : "";
+ p.innerHTML=
+  '<div class="box" style="--ac:'+ac+';padding:0;overflow:hidden"><div style="display:flex;gap:22px;padding:20px 22px;flex-wrap:wrap">'+
+   '<div style="width:160px;flex-shrink:0;border-radius:13px;overflow:hidden;border:2px solid rgba(255,255,255,.16)">'+cardArt(c,"_d")+'</div>'+
+   '<div style="flex:1;min-width:250px"><h2 style="font-size:27px;font-weight:900">'+c.name+'</h2>'+
+   '<div style="font-size:14px;color:#98a2b8;margin-top:3px">'+c.major+'　・　'+c.tag+'</div>'+
+   '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:15px">'+
+   rk.map(function(r){return '<div style="background:#111726;border:1px solid #262c3d;border-radius:12px;padding:12px 13px">'+
+    '<div style="font-size:12.5px;color:#98a2b8;font-weight:700">'+r[1]+' '+r[0]+'</div>'+
+    '<div style="margin:7px 0 7px">'+rankView(r[2])+'</div>'+
+    '<div style="font-size:14px;color:#e6ecf8;font-weight:800">'+r[3]+'</div></div>'}).join("")+
+   '</div></div></div></div>'+
+  riskLite+
+  (tr?'<div class="box" style="--ac:'+ac+'"><h3>🛣️ 怎麼走到這裡</h3>'+tr+'</div>':"")+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="cols2">'+
+   '<div class="box"><h3>🎯 最重要的三項能力</h3>'+skill3(c.skills)+'</div>'+
+   '<div class="box"><h3>⚠️ 比較辛苦的地方</h3>'+
+   c.cons.slice(0,3).map(function(x,i){return '<div class="con3"><div class="cn3">'+(i+1)+
+    '</div><div class="ct3">'+x.t+'</div></div>'}).join("")+'</div></div>'+
+  '<div class="box" style="--ac:#a78bfa"><h3>🗡️ 這行最吃的專武</h3>'+wq+'</div>'+
+  '<div class="box" style="--ac:'+ac+'"><h3>💵 收入</h3>'+salaryBlock(c,true)+'</div>'}
+
 function detail(c){
+ if(lite()) return liteDetail(c);
  var ac=GC[c.group],p=document.getElementById("panel");
  var rk=[["工作強度","😤",c.rank.intensity,c.rankwhy.intensity],
          ["職業難度","🎯",c.rank.difficulty,c.rankwhy.difficulty],
@@ -1348,6 +1514,12 @@ function fold(title,hint,body,open){
 function renderWeapBar(){
  var el=document.getElementById("weapbar"); if(!el)return;
  var on=WEAPONS.filter(function(w){return myWeap[w.k]});
+ if(lite()){
+  el.innerHTML='<div class="box" style="--ac:#a78bfa;padding:15px 17px"><h3>🗡️ 先選你的專武</h3>'+
+   '<div class="wpl" style="margin-top:11px">'+WEAPONS.map(function(w){
+     return '<button class="'+(myWeap[w.k]?"on":"")+'" style="--wc:'+w.color+'" onclick="toggleWeap(\''+w.k+'\')">'+
+      '<span class="wi">'+w.icon+'</span>'+w.n2+'</button>'}).join("")+'</div></div>';
+  return}
  el.innerHTML='<div class="box" style="--ac:#a78bfa;padding:17px 19px"><h3>🗡️ 先選你的專武</h3>'+
   '<div class="h3sub">這三樣不在成績單上，但對某些職業影響很大。'+
   '勾好之後，<b>每張卡片點進去都會顯示這三樣對那份工作有多大幫助</b>。</div>'+
@@ -1368,6 +1540,7 @@ function toggleWeap(k){myWeap[k]=!myWeap[k]; renderWeapBar(); if(sel)detail(byId
 
 function weapBlock(c){
  var W=WEAP[c.id]; if(!W) return "";
+ if(lite()) return "";
  var rows=WEAPONS.map(function(w){
   var lv=W[w.k][0], why=W[w.k][1], L=WLV[lv];
   return '<div class="weff'+(myWeap[w.k]?" act":"")+'" style="--wc:'+w.color+'">'+
@@ -1581,6 +1754,15 @@ function renderTree(){
     '<div class="dqy">是　'+d.y+'</div><div class="dqn">否　'+d.n+'</div></div>'+
     '<div class="dqn2">'+d.note+'</div></div>'}).join("");
 
+ if(lite()){
+  v.innerHTML=
+   '<div class="pagehead"><h2>三條路的技能樹</h2><div class="d">普高／高工／高商，用同一把尺量</div></div>'+
+   '<div class="box" style="--ac:#a78bfa"><h3>🗺️ 三條路長什麼樣</h3>'+
+    pathMap()+oneLiners()+
+    '<div style="font-size:12.5px;color:#98a2b8;font-weight:800;margin:4px 0 7px">▸ 五項屬性一次比較</div>'+
+    cmp3()+'</div>'+
+   '<div class="box" style="--ac:#38bdf8"><h3>🧭 四個問題，幫你收斂</h3>'+dec+'</div>';
+  stamp(v); return}
  v.innerHTML=
   '<div class="pagehead"><h2>三條路的技能樹</h2><div class="d">普高／高工／高商，用同一把尺量</div></div>'+
   '<div class="box" style="--ac:#a78bfa"><h3>🗺️ 三十秒看懂：三條路長什麼樣</h3>'+
@@ -1935,10 +2117,11 @@ function cmpBlock(){
  return '<div class="cmpbox"><h3>📊 你選的 '+cs.length+' 個職業，長這樣</h3>'+
   '<div class="h3sub">六個面向一次比較。<b>越往外圈＝該項越高</b>——但高不一定好，工作強度與風險越外圈越辛苦。</div>'+
   '<div class="radarwrap">'+radarSVG(cs)+'<div class="rlg">'+legend+
-  '<div class="axnote">💰薪資　🎯難度（多難進去）　😤強度（多累）<br>🏫學校依賴（多看學校）　🏠嘉義在地機會　⚠️特殊風險</div></div></div>'+
-  tbl+
-  '<div style="font-size:13px;font-weight:900;color:#98a2b8;margin:20px 0 0">▸ 每個職業最重要的三項能力</div>'+
-  '<div class="top3">'+t3+'</div></div>'}
+  '<div class="axnote">💰薪資　🎯難度　😤強度　🏫學校依賴　🏠嘉義機會　⚠️風險</div></div></div>'+
+  (lite()? "" :
+   tbl+
+   '<div style="font-size:13px;font-weight:900;color:#98a2b8;margin:20px 0 0">▸ 每個職業最重要的三項能力</div>'+
+   '<div class="top3">'+t3+'</div>')+'</div>'}
 
 /* --- 各項積分計算 --- */
 function fMoral(){
@@ -1965,7 +2148,7 @@ function setFN(k,el,max){ var n=parseInt(el.value,10); if(isNaN(n)||n<0)n=0; if(
 function seg(k,opts){
  return '<div class="fseg">'+opts.map(function(o){
    return '<button class="'+(F[k]===o[0]?"on":"")+'" onclick="setF(\''+k+'\','+
-     (typeof o[0]==="string"?"\'"+o[0]+"\'":o[0])+')">'+o[1]+'</button>'}).join("")+'</div>';
+     (typeof o[0]==="string"?"\'"+o[0]+"\'":o[0])+')">'+(lite()?String(o[1]).replace(/（[^）]*）/g,""):o[1])+'</button>'}).join("")+'</div>';
 }
 function frow(name,max,now,std,ctl,col){
  return '<div class="frow"><div class="fl"><div class="ft">'+name+
@@ -2073,6 +2256,15 @@ function renderPlan(){
     '<div class="tnow">'+t.now+'</div>'+
     '<div class="tact">👉 <b>現在該做的事</b>　'+t.act+'</div></div>'}).join("");
 
+ if(lite()){
+  v.innerHTML=
+   cmpBlock()+ totbar+ saveBar()+
+   '<div class="box" style="--ac:#a78bfa"><h3>📝 會考成績</h3>'+
+    '<div class="sgrid">'+inputs+wsel+'</div></div>'+
+   '<div class="box" style="--ac:#f59e0b"><h3>🏅 多元學習表現（上限 26）</h3>'+multiRows+'</div>'+
+   '<div class="box" style="--ac:#38bdf8"><h3>📚 其他比序項目（合計 29）</h3>'+otherRows+'</div>'+
+   '<div id="result"></div>';
+  renderResult(); return}
  v.innerHTML=
   cmpBlock()+ totbar+ saveBar()+
   '<div class="box" style="--ac:#a78bfa"><h3>📝 第一步：會考成績</h3>'+
@@ -2291,6 +2483,7 @@ function renderResult(){
 try{var _w=localStorage.getItem("cy_weap"); if(_w) myWeap=JSON.parse(_w);
     var _m=localStorage.getItem("cy_mastery"); if(_m) mastery=JSON.parse(_m);}catch(e){}
 document.getElementById("gfoot").innerHTML=COPY+"　·　"+VERSION+"　·　更新於 "+BUILT;
+renderModeSw(); renderStatic();
 renderGrid();renderWeapBar();go("jobs");
 </script>
 <style>@media(max-width:900px){.cols2{grid-template-columns:1fr !important}}</style>
