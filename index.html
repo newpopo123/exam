@@ -25,8 +25,8 @@ header{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16p
 /* 主頁籤 */
 .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;position:sticky;top:0;z-index:40;
  background:rgba(14,16,24,.94);padding:10px 0;backdrop-filter:blur(8px)}
-.nv{padding:9px 20px;border-radius:10px;border:1.5px solid var(--line);background:#141a2b;
- font-size:14.5px;font-weight:800;cursor:pointer;color:var(--dim);font-family:inherit}
+.nv{padding:9px 13px;border-radius:10px;border:1.5px solid var(--line);background:#141a2b;
+ font-size:14px;font-weight:800;cursor:pointer;color:var(--dim);font-family:inherit;white-space:nowrap}
 .nv:hover{border-color:#3d4761;color:#dbe2f0}
 .nv.on{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff;border-color:transparent}
 .nv .badge2{display:inline-block;background:#fbbf24;color:#231a02;border-radius:999px;
@@ -572,8 +572,12 @@ details.fold .fhint{font-size:12px;color:var(--dim);font-weight:600;margin-left:
  .aitag{padding:7px 11px}.aitag .tv{font-size:13px}}
 
 
-/* ===== 精簡／完整 切換 ===== */
+/* ===== 精簡／完整 切換（跟頁籤一起置頂） ===== */
 header{position:relative}
+.navbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;
+ background:rgba(14,16,24,.94);backdrop-filter:blur(8px);padding:10px 0;margin-bottom:22px}
+.navbar .nav{position:static;background:none;padding:0;margin:0;flex:1;min-width:0;gap:6px;
+ z-index:auto;backdrop-filter:none}
 .modesw{display:flex;gap:0;border:1.5px solid var(--line);border-radius:11px;overflow:hidden;
  background:#0d1220;flex-shrink:0}
 .modesw button{padding:8px 16px;border:none;background:none;font-family:inherit;font-size:13.5px;
@@ -619,8 +623,9 @@ body.lite .frow > .fr{border-left:none;border-top:1px solid var(--line)}
  justify-content:center;font-size:11.5px;font-weight:900;color:#08101f;background:#2a3244}
 .wpl button.on{border-color:var(--wc);color:#fff;background:#101a2b}
 .wpl button.on .wi{background:var(--wc)}
-@media(max-width:640px){.modesw button{padding:7px 12px;font-size:12.5px}
- .modehint{text-align:left}.sk3 .nm3{width:60px;font-size:13px}}
+@media(max-width:640px){.modesw button{padding:7px 9px;font-size:12px}
+ .modesw .mw{display:none}
+ .sk3 .nm3{width:60px;font-size:13px}}
 
 /* ===================== 手機版 ===================== */
 @media (max-width:640px){
@@ -629,8 +634,9 @@ body.lite .frow > .fr{border-left:none;border-top:1px solid var(--line)}
  header{padding-bottom:11px;margin-bottom:11px}
  .sub{font-size:13px}
  /* 頁籤改成橫向滑動，不再折成四排 */
- .nav{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:6px;padding:8px 0;
-  margin:0 -12px 14px;padding-left:12px;padding-right:12px;
+ .navbar{gap:8px;margin:0 -12px 14px;padding:8px 12px}
+ .modesw{box-shadow:-9px 0 11px rgba(14,16,24,.95)}
+ .nav{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:6px;padding:0;margin:0;
   scrollbar-width:none;-webkit-overflow-scrolling:touch}
  .nav::-webkit-scrollbar{display:none}
  .nv{flex:0 0 auto;font-size:13.5px;padding:9px 14px;white-space:nowrap}
@@ -652,7 +658,7 @@ body.lite .frow > .fr{border-left:none;border-top:1px solid var(--line)}
  .wp{min-width:100%}
  /* 科目快速跳轉也改橫向滑動 */
  .jump{flex-wrap:nowrap;overflow-x:auto;gap:6px;margin:0 -12px 6px;padding-left:12px;padding-right:12px;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch;top:52px}
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;top:56px}
  .jump::-webkit-scrollbar{display:none}
  .jump button{flex:0 0 auto;font-size:12.5px;padding:7px 12px;white-space:nowrap}
  .jump button.plan{margin-left:0}
@@ -723,13 +729,12 @@ footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-si
       <h1>🧭 升學職業導覽</h1>
       <div class="sub">35 張職業卡牌 · 職業推薦 · 三條升學路徑 · 會考制度</div>
     </div>
-    <div>
-      <div class="modesw" id="modesw"></div>
-      <div class="modehint" id="modehint"></div>
-    </div>
   </div>
 </header>
-<div class="nav" id="nav"></div>
+<div class="navbar">
+  <div class="nav" id="nav"></div>
+  <div class="modesw" id="modesw"></div>
+</div>
 
 <div class="view" id="v-exam"></div>
 <div class="view" id="v-普高"></div>
@@ -1010,17 +1015,16 @@ var PIE=["#60a5fa","#a78bfa","#f472b6","#fbbf24","#34d399","#22d3ee"];
 var TABS=[["jobs","🃏 職業卡牌"],["tree","🌳 三路技能樹"],["quiz","🧭 職業推薦"],["exam","📋 會考制度"],
           ["普高","🎓 普高路徑"],["高工","🔧 高工路徑"],["高商","💼 高商路徑"],
           ["plan","🎯 目標分析"],["subj","📚 考科拆解"]];
-var COPY="© 2026 tako", VERSION="v1.4", BUILT="2026/09/05";
+var COPY="© 2026 tako", VERSION="v1.5", BUILT="2026/09/06";
 /* ===== 精簡版 / 完整版 ===== */
 var MODE="lite";
 try{var _m=localStorage.getItem("cy_mode"); if(_m==="full"||_m==="lite") MODE=_m}catch(e){}
 function lite(){return MODE==="lite"}
 function renderModeSw(){
  var el=document.getElementById("modesw"); if(!el) return;
- el.innerHTML=[["lite","🍃 精簡版"],["full","📚 完整版"]].map(function(m){
-  return '<button class="'+(MODE===m[0]?"on":"")+'" onclick="setMode(\''+m[0]+'\')">'+m[1]+'</button>'}).join("");
- var h=document.getElementById("modehint");
- if(h) h.innerHTML = lite()? "只留重點，看得快" : "完整資料與出處都在這裡";
+ el.innerHTML=[["lite","🍃 精簡"],["full","📚 完整"]].map(function(m){
+  return '<button class="'+(MODE===m[0]?"on":"")+'" onclick="setMode(\''+m[0]+'\')" title="'+
+   (m[0]==="lite"?"只留重點，看得快":"完整資料與出處都在這裡")+'">'+m[1]+'<span class="mw">版</span></button>'}).join("");
  document.body.className = MODE}
 function setMode(m){
  MODE=m; try{localStorage.setItem("cy_mode",m)}catch(e){}
@@ -1974,11 +1978,10 @@ function bizBlock(c){
 function aiChip(id){
  var a=AIX[id]; if(!a) return "";
  var co=a[0], rk=a[1], lb, col;
+ /* 卡面只標最兩極的：入門層衝擊大、以及 AI 難取代。中間地帶不標，點進去才看得到完整兩軸 */
  if(rk>=3){lb="AI衝擊大"; col="#ef4444"}
- else if(rk===2){lb="AI衝擊中"; col="#f59e0b"}
- else if(co===3){lb="要會用AI"; col="#38bdf8"}
- else if(co===2){lb="AI幫得上"; col="#a78bfa"}
- else {lb="AI難取代"; col="#4ade80"}
+ else if(rk<=1&&co<=2){lb="AI難取代"; col="#4ade80"}
+ else return "";
  return '<div class="cai" style="background:'+col+'"><span class="rb">🤖</span>'+lb+'</div>'}
 
 function dots(n){var h='<div class="dots">';
