@@ -627,6 +627,37 @@ body.lite .frow > .fr{border-left:none;border-top:1px solid var(--line)}
  .modesw .mw{display:none}
  .sk3 .nm3{width:60px;font-size:13px}}
 
+
+/* ===== 出處統一收到「資料附錄」，頁面上不再零散出現 ===== */
+.esrc,.aisrc,.abs,.cut .sr,.srcline{display:none !important}
+.srcptr{display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7690;
+ background:#101625;border:1px dashed #2f3a52;border-radius:9px;padding:9px 13px;margin-top:14px}
+.srcptr b{color:#8b93ad;font-weight:800}
+.srcptr button{margin-left:auto;background:none;border:1px solid #2f3a52;border-radius:7px;
+ color:#93c5fd;font-family:inherit;font-size:11.5px;font-weight:800;padding:4px 11px;cursor:pointer;
+ white-space:nowrap}
+.srcptr button:hover{border-color:#3b6ea5;color:#dbeafe}
+/* 資料附錄頁 */
+.apx{border:1px solid var(--line);border-radius:15px;background:#111726;margin-bottom:13px;overflow:hidden}
+.apx>summary{list-style:none;cursor:pointer;padding:15px 18px;font-size:16.5px;font-weight:900;
+ display:flex;align-items:center;gap:10px;background:#151c2e;user-select:none}
+.apx>summary::-webkit-details-marker{display:none}
+.apx>summary:after{content:"▼";margin-left:auto;font-size:12px;color:#7c8aa5}
+.apx[open]>summary:after{content:"▲"}
+.apx>summary:hover{background:#1a2237}
+.apx .cnt{font-size:11.5px;font-weight:800;color:#c7d0e2;background:#1c2436;border:1px solid #2f3a52;
+ border-radius:999px;padding:2px 9px}
+.apx .body{padding:15px 18px}
+.srow{border-top:1px dashed var(--line);padding:12px 0}
+.srow:first-child{border-top:none}
+.srow .sn{font-size:14.5px;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.srow .sg{font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;background:#1c2436;
+ border:1px solid #2f3a52;color:#98a2b8}
+.srow .sb{font-size:12.8px;color:#a9b3c9;line-height:1.75}
+.srow .sb b{color:#c7d0e2}
+.apxlead{background:#111726;border-left:5px solid #38bdf8;border-radius:11px;padding:15px 18px;
+ font-size:13.5px;color:#c7d0e2;line-height:1.8;margin-bottom:14px}
+
 /* ===================== 手機版 ===================== */
 @media (max-width:640px){
  .wrap{padding:14px 12px 60px}
@@ -750,6 +781,7 @@ footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-si
 <div class="view" id="v-quiz"></div>
 <div class="view" id="v-plan"></div>
 <div class="view" id="v-subj"></div>
+<div class="view" id="v-srcs"></div>
 
 <div class="tray" id="tray" style="display:none"></div>
 <footer>資料來源：教育部、勞動部職類別薪資調查、主計總處、115學年度嘉義區免試入學簡章、104人力銀行<br><span id="gfoot"></span></footer>
@@ -1014,8 +1046,8 @@ var GC={"一類組":"#fb923c","二類組":"#60a5fa","三類組":"#2dd4bf","高�
 var PIE=["#60a5fa","#a78bfa","#f472b6","#fbbf24","#34d399","#22d3ee"];
 var TABS=[["jobs","🃏 職業卡牌"],["tree","🌳 三路技能樹"],["quiz","🧭 職業推薦"],["exam","📋 會考制度"],
           ["普高","🎓 普高路徑"],["高工","🔧 高工路徑"],["高商","💼 高商路徑"],
-          ["plan","🎯 目標分析"],["subj","📚 考科拆解"]];
-var COPY="© 2026 tako", VERSION="v1.5", BUILT="2026/09/06";
+          ["plan","🎯 目標分析"],["subj","📚 考科拆解"],["srcs","📎 資料附錄"]];
+var COPY="© 2026 tako", VERSION="v1.6", BUILT="2026/09/06";
 /* ===== 精簡版 / 完整版 ===== */
 var MODE="lite";
 try{var _m=localStorage.getItem("cy_mode"); if(_m==="full"||_m==="lite") MODE=_m}catch(e){}
@@ -1095,13 +1127,14 @@ TABS.forEach(function(t){var b=document.createElement("button");b.className="nv"
  b.innerHTML=t[1];b.onclick=function(){go(t[0])};nav.appendChild(b)});
 function go(k){cur=k;
  [].forEach.call(nav.children,function(b){b.className="nv"+(b.dataset.k===k?" on":"")});
- ["jobs","tree","quiz","exam","普高","高工","高商","plan","subj"].forEach(function(x){
+ ["jobs","tree","quiz","exam","普高","高工","高商","plan","subj","srcs"].forEach(function(x){
    document.getElementById("v-"+x).className="view"+(x===k?" on":"")});
  document.getElementById("tray").style.display = (k==="jobs"&&picked.length)?"flex":"none";
  if(k==="plan") renderPlan();
  if(k==="subj") renderSubj();
  if(k==="tree") renderTree();
  if(k==="quiz") renderQuiz();
+ if(k==="srcs") renderSrcs();
  stamp(document.getElementById("v-"+k));
  window.scrollTo({top:0,behavior:"smooth"})}
 
@@ -1154,7 +1187,7 @@ function y116Block(){
   '<div class="h3sub">升國三面對的就是這一屆・查核於 2026 年 9 月</div>'+
   '<div class="info" style="margin-top:0"><b>一句話結論：目前查無任何制度變革，照現制準備就對了。</b>'+
   '已確定的是 <b>116 年會考 5/15~5/16</b>；嘉義區作業要點預計 2026 年 10 月前後公布、簡章約 12 月~隔年 2 月。</div>'+
-  fold('📋 六件事的詳細狀況','（想確認細節再點）','<div class="warn" style="margin-top:0">'+Y116_LEAD+'</div>'+rows)+
+  fold('📋 六件事的詳細狀況','（想確認細節再點）',rows)+
   '<div class="warn">'+Y116_CONCL+'</div></div>'}
 
 function estBlocks(){
@@ -1175,15 +1208,15 @@ function estBlocks(){
     e.why.map(function(x){return '<p>'+x+'</p>'}).join("")+
     '<div class="ec">💡 '+e.concl+'</div></div>'}).join("");
  return '<div class="box" style="--ac:#38bdf8"><h3>🔎 嘉工、嘉商門檻推估（拿同級學校推算）</h3>'+
-  '<div class="h3sub">嘉義區不公布，只能拿其他區同級學校來推——先看懂為什麼不能直接搬</div>'+
+  '<div class="h3sub">嘉義區不公布，只能拿其他區同級學校來推算</div>'+
   fold('📐 推算過程：各區制度對照＋同級學校實際數字','（想知道怎麼推出來的再點）',
    '<div style="font-size:12.5px;color:#98a2b8;font-weight:800;margin-bottom:5px">第一步：各區的制度其實完全不一樣</div>'+zt+
-   '<div class="warn">'+PEER_NOTE+'</div>'+
-   '<div style="font-size:12.5px;color:#98a2b8;font-weight:800;margin:18px 0 5px">第二步：同級學校的實際數字</div>'+peers+
-   '<div class="info">'+PEER_MISSING+'</div>')+'</div>'+
+   '<div style="font-size:12.5px;color:#98a2b8;font-weight:800;margin:18px 0 5px">第二步：同級學校的實際數字</div>'+peers)+'</div>'+
   '<div class="box" style="--ac:#f59e0b"><h3>📐 推估結果</h3>'+
   '<div class="h3sub">以「會考等級組合」為共同單位，換算回嘉義區 27 分制</div>'+
-  ests+'<div class="warn">'+EST_WARN+'</div></div>'}
+  ests+
+  '<div class="warn" style="font-size:12.8px">🚨 <b>這是推估，不是官方門檻。</b>推估方法、限制與正確的問法收在「📎 資料附錄」。</div>'+
+  srcPtr("門檻推估的方法與限制")+'</div>'}
 
 function scoringBlocks(){
  var COL={"志願序":"#22c55e","多元學習表現":"#f59e0b","國中教育會考":"#a78bfa",
@@ -1221,7 +1254,7 @@ function scoringBlocks(){
     '<div class="mn">'+c.main+'</div>'+
     c.detail.map(function(d){return '<p>'+d+'</p>'}).join("")+
     (c.total?'<div class="calc"><b>總積分實例（'+c.total.year+'）：'+c.total.val+'</b><br>'+c.total.calc+'</div>':"")+
-    (c.src?'<div class="sr">資料來源：'+c.src+'</div>':"")+'</div>'}).join("");
+    (c.src?'<div class="sr srcline">資料來源：'+c.src+'</div>':"")+'</div>'}).join("");
 
  return '<div class="box" style="--ac:#a78bfa"><h3>🧮 82 分是怎麼組成的</h3>'+
    '<div class="h3sub">嘉義高中、嘉義高工、嘉義高商 都在嘉義區免試就學區，用的是<b>同一張 82 分比序表</b>，會考一律只佔 27 分</div>'+
@@ -1240,8 +1273,7 @@ function scoringBlocks(){
   '<div class="box" style="--ac:#60a5fa"><h3>🎯 這三間學校要幾分才能上</h3>'+
    '<div class="h3sub">查得到官方依據才寫，查不到就說查不到</div>'+
    '<div class="info">'+CUTOFF_NOTE+'</div>'+cuts+
-   '<div class="warn">⚠️ 網路上流傳的「30 點制」「幾點上嘉中」多半是別區（基北區）的算法或補習班自訂估分，'+
-   '<b>和嘉義區 82 分制不相容</b>，請不要混用。想知道自己國中的實際落點，最準的來源是<b>學校輔導室的歷年分發紀錄</b>。</div></div>'}
+   srcPtr("三校門檻的出處與注意事項")+'</div>'}
 
 function liteScoring(){
  var COL={"志願序":"#22c55e","多元學習表現":"#f59e0b","國中教育會考":"#a78bfa",
@@ -1266,7 +1298,7 @@ function renderStatic(){
         : "⚠️ <b>最重要的觀念：</b>嘉義區超額比序總分 82 分，但<b>會考成績只佔 27 分（約三分之一）</b>。其餘 55 分來自多元學習表現、均衡學習、志願序等在校表現——所以不是「分數高就上」。往下捲有完整的 82 分拆解、得分範例與三校門檻。",
   "#a78bfa",[]);
  document.getElementById("v-exam").innerHTML +=
-   lite()? liteScoring() : (y116Block() + scoringBlocks() + estBlocks() + auditBlock());
+   lite()? liteScoring() : (y116Block() + scoringBlocks() + estBlocks() + srcPtr("會考制度・三校門檻・資料查核"));
  ["普高","高工","高商"].forEach(function(tk){ drawPath(tk) });
  stamp(document.getElementById("v-exam"))}
 function drawPath(tk){
@@ -1369,7 +1401,7 @@ function salaryBlock(c,onlyChart){
      '</div><div style="font-size:16px;font-weight:900;color:'+GC[c.group]+'">'+money(p.v,u)+'</div>'+dot)+'</div>'});
   h+='</div></div>';
   if(pts.some(function(p){return p.e}))
-   h+='<div style="font-size:11.5px;color:#f59e0b;text-align:right">* 標星號者為推估，非官方統計</div>'}
+   h+='<div style="font-size:11.5px;color:#f59e0b;text-align:right;margin-top:14px">* 標星號者為推估，非官方統計</div>'}
  if(onlyChart){
   if(s.headcount!=null) h+='<div class="kpi"><div class="k"><div class="big" style="--ac:'+GC[c.group]+
     ';font-size:20px">'+nf(s.headcount)+' 人</div><div class="l">'+
@@ -1384,8 +1416,8 @@ function salaryBlock(c,onlyChart){
    nf(s.headcount)+' 人</div><div class="l">'+(c.id==="tsmc"?"台積電員工數":"全台從業人數")+'</div></div>');
  if(cells.length)h+='<div class="kpi">'+cells.join("")+'</div>';
  if(s.headnote)h+='<div class="info">👥 '+s.headnote+'</div>';
- if(s.missing)h+='<div class="warn">❓ <b>沒有數字的部分：</b>'+s.missing+'</div>';
- h+='<div style="font-size:12px;color:#98a2b8;background:#111726;border-left:4px solid '+GC[c.group]+
+ if(s.missing)h+='<div class="warn" style="font-size:12.5px">❓ 這一行有部分數字<b>查無官方統計</b>，完整說明收在「📎 資料附錄」。</div>';
+ h+='<div class="srcline" style="font-size:12px;color:#98a2b8;background:#111726;border-left:4px solid '+GC[c.group]+
   ';border-radius:8px;padding:11px 14px;margin-top:14px;line-height:1.65">'+
   '<span style="display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;'+
   'margin-right:6px;background:'+b[0]+';color:'+b[1]+'">'+b[2]+'</span>'+(s.src||"")+'</div>';
@@ -1951,7 +1983,7 @@ function bizBlock(c){
  var rules=BIZ_RULE.map(function(x){
    return '<div class="tip"><div class="n" style="background:#2a1e0a;color:#fbbf24">§</div>'+
     '<div><div class="tt">'+x.t+'</div><div class="dd">'+x.d+
-    '<div style="font-size:11.5px;color:#6b7690;margin-top:5px">依據：'+x.src+'</div></div></div></div>'}).join("");
+    '<div class="srcline" style="font-size:11.5px;color:#6b7690;margin-top:5px">依據：'+x.src+'</div></div></div></div>'}).join("");
  var types=BIZ_TYPES.map(function(x){
    return '<div class="bz"><div class="bh"><span class="bi">'+x.ic+'</span>'+
     '<span class="bn">'+x.n+'</span><span class="bcls">'+x.cls+'</span>'+
@@ -1961,7 +1993,7 @@ function bizBlock(c){
  var loans=BIZ_LOAN.map(function(x){
    return '<div class="tip"><div class="n" style="background:#0a2540;color:#93c5fd">$</div>'+
     '<div><div class="tt">'+x.n+'</div><div class="dd">'+x.d+
-    '<div style="font-size:11.5px;color:#6b7690;margin-top:5px">依據：'+x.src+'</div></div></div></div>'}).join("");
+    '<div class="srcline" style="font-size:11.5px;color:#6b7690;margin-top:5px">依據：'+x.src+'</div></div></div></div>'}).join("");
  return '<div class="box" style="--ac:#fbbf24"><h3>🚀 500 萬以內，可以怎麼開始</h3>'+
   '<div class="h3sub">創業不是只有「開一家公司」這一種</div>'+
   '<div class="lead" style="--ac:#fbbf24;margin:0 0 14px">'+BIZ_INTRO+'</div>'+
@@ -1970,8 +2002,7 @@ function bizBlock(c){
   '<div style="font-size:14.5px;font-weight:900;margin:18px 0 8px">🧩 500 萬以內的八種起步型態</div>'+
   '<div class="bzg">'+types+'</div>'+
   '<div style="font-size:14.5px;font-weight:900;margin:18px 0 4px">🏦 政府可以借你的錢</div>'+
-  loans+
-  '<div class="warn" style="margin-top:14px">'+BIZ_WARN+'</div></div>'}
+  loans+ srcPtr("創業制度與貸款額度")+'</div>'}
 
 
 /* ================= AI 影響標註 ================= */
@@ -2001,13 +2032,13 @@ function aiBlock(c){
   '</div>'+
   '<div class="aid">'+a[2]+'</div>'+
   '<div class="aido">🧭 <b>那該怎麼辦</b>　'+a[3]+'</div>'+
-  '<div class="aisrc">判斷依據見「三路技能樹」頁最下方的〈AI 與工作〉那一段（引用 ILO 2025、WEF 2025）。'+
-  '「入門層有壓力」<b>不等於</b>這個職業會消失。</div></div>'}
+  '<div style="font-size:11.8px;color:#7c8aa5;margin-top:11px;border-top:1px solid #262c3d;padding-top:9px">'+
+  '「入門層有壓力」<b style="color:#a9b3c9">不等於</b>這個職業會消失。判斷依據見「📎 資料附錄」。</div></div>'}
 
 function aiBaseBlock(){
  var rows=AI_BASE.map(function(x){
    return '<div class="aib"><div class="abt">'+x.t+'</div><div class="abd">'+x.d+'</div>'+
-    '<div class="abs">出處：'+x.src+'</div></div>'}).join("");
+    '<div class="abs srcline">出處：'+x.src+'</div></div>'}).join("");
  var lg=CAREERS.map(function(c){var a=AIX[c.id]; return a?{c:c,co:a[0],rk:a[1]}:null})
    .filter(Boolean);
  function grp(f,t,col){
@@ -2026,6 +2057,102 @@ function aiBaseBlock(){
   '<div style="font-size:14.5px;font-weight:900;margin:18px 0 10px">📋 四組分類</div>'+
   lists+
   '<div class="warn" style="margin-top:8px">'+AI_TAIL+'</div></div>'}
+
+
+/* ================= 資料附錄 ================= */
+function srcPtr(what){
+ return '<div class="srcptr">📎 <b>'+what+'</b>的出處、推估方法與注意事項，統一收在資料附錄。'+
+  '<button onclick="go(\'srcs\')">前往資料附錄 →</button></div>'}
+
+function apx(title,count,body,open){
+ return '<details class="apx"'+(open?" open":"")+'><summary>'+title+
+  (count?'<span class="cnt">'+count+'</span>':"")+'</summary><div class="body">'+body+'</div></details>'}
+function srow(name,tag,body){
+ return '<div class="srow"><div class="sn">'+name+(tag?'<span class="sg">'+tag+'</span>':"")+'</div>'+
+  '<div class="sb">'+body+'</div></div>'}
+
+function renderSrcs(){
+ var v=document.getElementById("v-srcs");
+
+ /* 1. 職業：薪資與風險出處 */
+ var byGroup={};
+ CAREERS.forEach(function(c){ (byGroup[c.group]=byGroup[c.group]||[]).push(c) });
+ var jobRows=Object.keys(byGroup).map(function(g){
+  return '<div style="font-size:13.5px;font-weight:900;color:'+GC[g]+';margin:16px 0 4px">'+g+'</div>'+
+   byGroup[g].map(function(c){
+    var out="";
+    if(c.salary&&c.salary.src) out+='<b>薪資</b>　'+c.salary.src;
+    if(c.salary&&c.salary.missing) out+=(out?'<br>':"")+'<b>查無的部分</b>　'+c.salary.missing;
+    if(c.salary&&c.salary.headnote) out+=(out?'<br>':"")+'<b>人數</b>　'+c.salary.headnote;
+    var r=RISK[c.id];
+    if(r&&r.src) out+=(out?'<br>':"")+'<b>風險（'+r.lv+'）</b>　'+r.src;
+    if(!out) out='<span style="color:#6b7690">這張卡沒有引用外部統計。</span>';
+    var vb=c.salary&&c.salary.verified,
+        bm={official:["官方統計","#4ade80"],company:["公司公布","#7dd3fc"],
+            survey:["業界調查","#fbbf24"],estimate:["推估／查無","#fca5a5"]},
+        b=bm[vb]||bm.estimate;
+    return '<div class="srow"><div class="sn">'+c.name+
+     '<span class="sg" style="color:'+b[1]+';border-color:'+b[1]+'66">'+b[0]+'</span></div>'+
+     '<div class="sb">'+out+'</div></div>'}).join("")}).join("");
+
+ /* 2. 資料查核聲明 */
+ var auditRows=AUDIT.map(function(a){var st=AUDIT_STAT[a.lv];
+  return '<div class="au" style="--sc:'+st[1]+'"><div class="ah"><div class="at">'+a.t+'</div>'+
+   '<div class="as">'+st[2]+' '+st[0]+'</div></div><ul>'+
+   a.items.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul></div>'}).join("");
+
+ /* 3. 會考制度 */
+ var examSrc =
+  srow("116 學年度的資料狀態","制度",Y116_LEAD)+
+  srow("三校門檻","出處",
+   CUTOFFS.map(function(c){return '<b>'+c.school+'</b>　'+(c.src||"查無公開資料")}).join('<br>'))+
+  srow("網路上的「30 點制」","注意",
+   "網路流傳的「30 點制」「幾點上嘉中」多半是<b>別區（基北區）的算法</b>或補習班自訂估分，"+
+   "<b>和嘉義區 82 分制不相容</b>，請不要混用。想知道自己國中的實際落點，"+
+   "最準的來源是<b>學校輔導室的歷年分發紀錄</b>。")+
+  srow("跨區推估的前提","方法",PEER_NOTE)+
+  srow("查不到的同級學校","查無",PEER_MISSING)+
+  srow("推估的可信度","🚨 一定要看",EST_WARN)+
+  srow("積分結算日","制度",DEADLINE);
+
+ /* 4. AI 標註 */
+ var aiSrc = AI_BASE.map(function(x){return srow(x.t,"報告",x.d+'<br><span style="color:#6b7690">出處：'+x.src+'</span>')}).join("")+
+   srow("這些標註是怎麼來的","方法",AI_LEAD)+
+   srow("最後提醒","觀點",AI_TAIL);
+
+ /* 5. 創業制度 */
+ var bizSrc = BIZ_RULE.map(function(x){return srow(x.t,"法規",x.d+'<br><span style="color:#6b7690">依據：'+x.src+'</span>')}).join("")+
+   BIZ_LOAN.map(function(x){return srow(x.n,"貸款",x.d+'<br><span style="color:#6b7690">依據：'+x.src+'</span>')}).join("")+
+   srow("為什麼不給「開店要多少錢」","刻意留白",BIZ_WARN);
+
+ /* 6. 其他 */
+ var misc =
+  srow("考科各單元的比例","方法",SUBJ_NOTE)+
+  srow("職業推薦怎麼算的","方法",QUIZ_HONEST)+
+  srow("專武「家庭後盾」為什麼要寫","觀點",WEAP_HONEST)+
+  srow("全站主要資料來源","總覽",
+   "教育部與國中教育會考官網、考選部、內政部、勞動部（職類別薪資調查、勞保局、iCAP 職能基準）、"+
+   "環境部、財政部、經濟部（中小及新創企業署）、主計總處、"+
+   "115 學年度嘉義區免試入學簡章與作業要點、各校官網、"+
+   "ILO（2025）、WEF（2025）、中華職棒與 TPBL 聯盟公告、台積電企業招募資訊。");
+
+ v.innerHTML=
+  '<div class="pagehead"><h2>資料附錄</h2><div class="d">所有出處、推估方法與注意事項，統一收在這裡</div></div>'+
+  '<div class="apxlead">'+
+   '<b>為什麼把出處集中在這一頁？</b><br>'+
+   '因為出處寫在每一段旁邊會讓人分心，但拿掉又不誠實。所以做法是：'+
+   '<b>頁面上只留結論，出處和限制全部收到這裡</b>，你想查隨時查得到。<br><br>'+
+   '這份資料的原則是：<b>寧可寫「查無」，也不編一個看起來很專業的數字。</b>'+
+   '下面每一條都標了那筆數字是官方統計、公司公布、業界調查，還是根本查不到。'+
+  '</div>'+
+  apx('🔎 資料查核聲明','逐條複查', '<div class="info" style="margin-top:0">'+AUDIT_LEAD+'</div>'+auditRows+
+      '<div class="warn">'+AUDIT_TAIL+'</div>', true)+
+  apx('💵 35 個職業的薪資與風險出處', CAREERS.length+' 筆', jobRows)+
+  apx('📋 會考制度・三校門檻・推估方法','7 條', examSrc)+
+  apx('🤖 AI 標註的依據','ILO 2025・WEF 2025', aiSrc)+
+  apx('🚀 創業制度與政府貸款的依據','法規條文', bizSrc)+
+  apx('📝 其他方法說明','4 條', misc);
+ stamp(v)}
 
 /* ---------- 目標分析 ---------- */
 var SUBS=["國文","英語","數學","社會","自然"];
