@@ -1047,7 +1047,7 @@ var PIE=["#60a5fa","#a78bfa","#f472b6","#fbbf24","#34d399","#22d3ee"];
 var TABS=[["jobs","🃏 職業卡牌"],["tree","🌳 三路技能樹"],["quiz","🧭 職業推薦"],["exam","📋 會考制度"],
           ["普高","🎓 普高路徑"],["高工","🔧 高工路徑"],["高商","💼 高商路徑"],
           ["plan","🎯 目標分析"],["subj","📚 考科拆解"],["srcs","📎 資料附錄"]];
-var COPY="© 2026 tako", VERSION="v1.6", BUILT="2026/09/06";
+var COPY="© 2026 tako", VERSION="v1.7", BUILT="2026/09/06";
 /* ===== 精簡版 / 完整版 ===== */
 var MODE="lite";
 try{var _m=localStorage.getItem("cy_mode"); if(_m==="full"||_m==="lite") MODE=_m}catch(e){}
@@ -1058,11 +1058,48 @@ function renderModeSw(){
   return '<button class="'+(MODE===m[0]?"on":"")+'" onclick="setMode(\''+m[0]+'\')" title="'+
    (m[0]==="lite"?"只留重點，看得快":"完整資料與出處都在這裡")+'">'+m[1]+'<span class="mw">版</span></button>'}).join("");
  document.body.className = MODE}
+/* 切換版本時，盡量停在同一段內容上 */
+var ANCHOR_SEL="h2,h3,.nm2,.eh,.cn,.at,.yt,.ph,.abt,.sn,.bn,.trt,.sjn,.unn,.cnm,.rnm,.t3h,.rec h4,.cname .n,.qt";
+function _scope(el){return el.closest?(el.closest("#panel")?"P":el.closest("#weapbar")?"W":el.closest("#grid")?"G":el.closest("#result")?"R":""):""}
+function _akey(el){return _scope(el)+"|"+(el.textContent||"").trim().slice(0,3)}
+function _heads(v){return [].slice.call(v.querySelectorAll(ANCHOR_SEL))}
+function scrollAnchor(){
+ var v=document.getElementById("v-"+cur);
+ var max=Math.max(1, document.documentElement.scrollHeight-window.innerHeight);
+ var a={frac: window.pageYOffset/max, keys:[]};
+ if(!v) return a;
+ var hs=_heads(v), best=null;
+ hs.forEach(function(h){
+   var t=h.getBoundingClientRect().top;
+   if(t<170){ a.keys.push(_akey(h)); if(!best || t>best.top) best={el:h,top:t} }});
+ if(best){ a.k=_akey(best.el); a.off=best.top }
+ return a}
+function restoreAnchor(a){
+ if(!a) return;
+ var v=document.getElementById("v-"+cur);
+ if(v){
+  var hs=_heads(v), map={};
+  hs.forEach(function(h){var k=_akey(h); if(map[k]===undefined) map[k]=h});
+  /* 先找一模一樣的那個標題，對不到就往回找最近一個還存在的 */
+  if(a.k && map[a.k]){
+   window.scrollTo(0, Math.max(0, map[a.k].getBoundingClientRect().top+window.pageYOffset-a.off));
+   return}
+  for(var i=(a.keys||[]).length-1;i>=0;i--){
+   var h=map[a.keys[i]];
+   if(h){ window.scrollTo(0, Math.max(0, h.getBoundingClientRect().top+window.pageYOffset-14)); return}}}
+ var max=Math.max(0, document.documentElement.scrollHeight-window.innerHeight);
+ window.scrollTo(0, Math.round((a.frac||0)*max))}
+
 function setMode(m){
+ if(MODE===m) return;
+ var a=scrollAnchor();
  MODE=m; try{localStorage.setItem("cy_mode",m)}catch(e){}
  renderModeSw(); renderStatic(); renderGrid(); renderWeapBar();
  if(sel) detail(byId(sel));
- var k=cur; go(k)}
+ go(cur, true);
+ restoreAnchor(a);
+ setTimeout(function(){restoreAnchor(a)},0);
+ setTimeout(function(){restoreAnchor(a)},90)}
 
 /* 精簡版用的白話等級說明（≤10字） */
 var LTI={SSR:"比狗還累",SR:"很硬會爆肝",S:"不太輕鬆",A:"還可以",B:"算穩定",C:"很輕鬆"};
@@ -1125,7 +1162,7 @@ function cardArt(c,uid){var g=GROUP_ART[c.group];uid=c.id+uid;
 var nav=document.getElementById("nav");
 TABS.forEach(function(t){var b=document.createElement("button");b.className="nv";b.dataset.k=t[0];
  b.innerHTML=t[1];b.onclick=function(){go(t[0])};nav.appendChild(b)});
-function go(k){cur=k;
+function go(k,keep){cur=k;
  [].forEach.call(nav.children,function(b){b.className="nv"+(b.dataset.k===k?" on":"")});
  ["jobs","tree","quiz","exam","普高","高工","高商","plan","subj","srcs"].forEach(function(x){
    document.getElementById("v-"+x).className="view"+(x===k?" on":"")});
@@ -1136,7 +1173,7 @@ function go(k){cur=k;
  if(k==="quiz") renderQuiz();
  if(k==="srcs") renderSrcs();
  stamp(document.getElementById("v-"+k));
- window.scrollTo({top:0,behavior:"smooth"})}
+ if(!keep) window.scrollTo({top:0,behavior:"smooth"})}
 
 /* 每頁結尾：版權 + 版本 */
 function stamp(el){
